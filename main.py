@@ -10,12 +10,13 @@ LASER_LENGTH = 20
 LASER_SPEED = 20
 ALIEN_SPAWN_INTERVAL = 1.2  # Seconds
 ALIEN_SPEED = 3.5
+LIFE = 3
 
 window = turtle.Screen()
 window.tracer(0)
 window.setup(0.5, 0.75)
 window.bgcolor(0.2, 0.2, 0.2)
-window.title("The Real Python Space Invaders")
+window.title("Space Invaders")
 
 LEFT = -window.window_width() / 2
 RIGHT = window.window_width() / 2
@@ -36,7 +37,7 @@ cannon.cannon_movement = 0  # -1, 0 or 1 for left, stationary, right
 text = turtle.Turtle()
 text.penup()
 text.hideturtle()
-text.setposition(LEFT * 0.8, TOP * 0.8)
+text.setposition(LEFT * 0.8, TOP * 0.7)
 text.color(1, 1, 1)
 
 lasers = []
@@ -71,7 +72,7 @@ def create_laser():
     laser.setposition(cannon.xcor(), cannon.ycor())
     laser.setheading(90)
     # Move laser to just above cannon tip
-    laser.forward(20)
+    laser.forward(50)
     # Prepare to draw the laser
     laser.pendown()
     laser.pensize(5)
@@ -124,13 +125,14 @@ alien_timer = 0
 game_timer = time.time()
 score = 0
 game_running = True
+time_last_turtle = time.time()
 while game_running:
     timer_this_frame = time.time()
 
     time_elapsed = time.time() - game_timer
     text.clear()
     text.write(
-        f"Time: {time_elapsed:5.1f}s\nScore: {score:5}",
+        f"Time: {time_elapsed:5.1f}s\nScore: {score:5}\nLife: {LIFE}",
         font=("Courier", 20, "bold"),
     )
     # Move cannon
@@ -161,9 +163,11 @@ while game_running:
     for alien in aliens:
         alien.forward(ALIEN_SPEED)
         # Check for game over
-        if alien.ycor() < FLOOR_LEVEL:
-            game_running = False
-            break
+        if alien.ycor() < FLOOR_LEVEL and time.time()- time_last_turtle>2:
+            LIFE -=1
+            time_last_turtle=time.time()
+            if LIFE==0:
+                game_running = False
 
     time_for_this_frame = time.time() - timer_this_frame
     if time_for_this_frame < TIME_FOR_1_FRAME:
