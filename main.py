@@ -163,7 +163,7 @@ while game_running:
     for alien in aliens:
         alien.forward(ALIEN_SPEED)
         # Check for game over
-        if alien.ycor() < FLOOR_LEVEL and time.time()- time_last_turtle>2:
+        if alien.ycor() < FLOOR_LEVEL and time.time()- time_last_turtle>1:
             LIFE -=1
             time_last_turtle=time.time()
             if LIFE==0:
